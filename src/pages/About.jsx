@@ -22,6 +22,7 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import journeyImg from "../assets/img_journey.png";
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -297,45 +298,23 @@ export default function About() {
               ))}
             </div>
           </motion.div>
-
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="relative"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative overflow-hidden shadow-2xl rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700"
           >
-            {/* Decorative Elements */}
-            <div className="absolute w-24 h-24 rounded-full -top-6 -left-6 bg-gradient-to-r from-yellow-400 to-orange-500 opacity-20 blur-xl"></div>
-            <div className="absolute w-32 h-32 rounded-full -bottom-6 -right-6 bg-gradient-to-r from-purple-500 to-pink-500 opacity-20 blur-xl"></div>
-
-            {/* Main Image */}
-            <div className="relative overflow-hidden shadow-2xl rounded-3xl">
-              <div className="aspect-[4/3] bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 relative">
-                {/* You can replace this with actual image */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="p-8 text-center">
-                    <FaRocket className="w-20 h-20 mx-auto mb-6 text-white/80" />
-                    <div className="mb-2 text-2xl font-bold text-white">
-                      Innovation Hub
-                    </div>
-                    <div className="text-white/80">
-                      Where Ideas Become Reality
-                    </div>
-                  </div>
-                </div>
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-              </div>
-
-              {/* Floating Badge */}
-              <div className="absolute transform -translate-x-1/2 -bottom-6 left-1/2">
-                <div className="flex items-center gap-2 px-6 py-3 text-white rounded-full shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600">
-                  <FaAward className="w-5 h-5" />
-                  <span className="font-semibold">Award Winning Team</span>
-                </div>
-              </div>
-            </div>
+            <motion.img
+              src={journeyImg}
+              alt="Innovation"
+              className="object-contain w-full h-full p-10"
+              animate={{ y: [0, -12, 0] }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
           </motion.div>
         </div>
       </div>
@@ -451,127 +430,69 @@ export default function About() {
 
           {/* Swiper Slider */}
           <Swiper
-            modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
-            spaceBetween={30}
+            modules={[Navigation, Pagination, Autoplay]}
             slidesPerView={1}
-            breakpoints={{
-              640: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              1024: {
-                slidesPerView: 3,
-                spaceBetween: 30,
-              },
-              1280: {
-                slidesPerView: 4,
-                spaceBetween: 30,
-              },
-            }}
-            navigation={{
-              prevEl: navigationPrevRef.current,
-              nextEl: navigationNextRef.current,
-            }}
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
+            spaceBetween={24}
+            centeredSlides
+            loop={teamData?.data?.length > 3}
+            speed={900}
             autoplay={{
-              delay: 3000,
+              delay: 2500,
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
-            loop={true}
-            effect="coverflow"
-            coverflowEffect={{
-              rotate: 0,
-              stretch: 0,
-              depth: 100,
-              modifier: 2.5,
-              slideShadows: false,
+            navigation
+            pagination={{ clickable: true }}
+            breakpoints={{
+              640: { slidesPerView: 1.2 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
             }}
-            grabCursor={true}
-            className="team-slider !py-8 !px-4"
-            onSwiper={(swiper) => {
-              // Delay initialization for navigation refs
-              setTimeout(() => {
-                swiper.params.navigation.prevEl = navigationPrevRef.current;
-                swiper.params.navigation.nextEl = navigationNextRef.current;
-                swiper.navigation.init();
-                swiper.navigation.update();
-              }, 100);
+            onBeforeInit={(swiper) => {
+              swiper.params.navigation.prevEl = navigationPrevRef.current;
+              swiper.params.navigation.nextEl = navigationNextRef.current;
             }}
+            className="team-slider !py-10"
           >
             {teamData?.data?.map((member) => (
               <SwiperSlide key={member.id}>
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  viewport={{ once: true }}
-                  className="h-full group"
-                >
-                  <div className="flex flex-col h-full p-6 transition-all duration-300 border border-gray-100 shadow-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl hover:shadow-2xl dark:border-gray-700">
-                    {/* Avatar */}
-                    <div className="relative mb-6">
-                      <div className="w-32 h-32 p-1 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-indigo-600">
-                        <div className="flex items-center justify-center w-full h-full text-4xl font-bold text-blue-600 bg-white rounded-full dark:bg-gray-800 dark:text-blue-400">
-                          {member.name?.[0]}
+                {({ isActive }) => (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{
+                      opacity: isActive ? 1 : 0.5,
+                      scale: isActive ? 1 : 0.9,
+                    }}
+                    transition={{ duration: 0.4 }}
+                    className={`h-full transition-all duration-300 ${
+                      isActive ? "z-10" : "z-0"
+                    }`}
+                  >
+                    <div className="flex flex-col h-full p-6 border border-gray-100 shadow-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl dark:border-gray-700">
+                      {/* Avatar */}
+                      <div className="relative mb-6">
+                        <div className="w-32 h-32 p-1 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-indigo-600">
+                          <div className="flex items-center justify-center w-full h-full text-4xl font-bold text-blue-600 bg-white rounded-full dark:bg-gray-800 dark:text-blue-400">
+                            {member.name?.[0]}
+                          </div>
                         </div>
                       </div>
-                      <div className="absolute bottom-0 flex items-center justify-center w-8 h-8 border-4 border-white rounded-full right-1/4 bg-gradient-to-r from-green-400 to-emerald-600 dark:border-gray-800">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+
+                      {/* Info */}
+                      <div className="flex-grow text-center">
+                        <h3 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">
+                          {member.name}
+                        </h3>
+                        <p className="mb-4 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                          {member.position}
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                          {member.bio?.substring(0, 100)}...
+                        </p>
                       </div>
                     </div>
-
-                    {/* Member Info */}
-                    <div className="flex-grow text-center">
-                      <h3 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">
-                        {member.name}
-                      </h3>
-                      <p className="mb-4 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-                        {member.position}
-                      </p>
-                      <p className="mb-6 text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
-                        {member.bio?.substring(0, 100)}...
-                      </p>
-                    </div>
-
-                    {/* Social Links */}
-                    <div className="flex justify-center gap-3 pt-4 mt-auto">
-                      {member.social_links?.linkedin && (
-                        <a
-                          href={member.social_links.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center w-10 h-10 text-gray-600 transition-all duration-300 transform bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-400 hover:bg-blue-500 hover:text-white hover:-translate-y-1"
-                        >
-                          <FaLinkedin className="w-5 h-5" />
-                        </a>
-                      )}
-                      {member.social_links?.twitter && (
-                        <a
-                          href={member.social_links.twitter}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center w-10 h-10 text-gray-600 transition-all duration-300 transform bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-400 hover:bg-sky-500 hover:text-white hover:-translate-y-1"
-                        >
-                          <FaTwitter className="w-5 h-5" />
-                        </a>
-                      )}
-                      {member.social_links?.github && (
-                        <a
-                          href={member.social_links.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center w-10 h-10 text-gray-600 transition-all duration-300 transform bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-800 dark:hover:bg-gray-600 hover:text-white hover:-translate-y-1"
-                        >
-                          <FaGithub className="w-5 h-5" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                )}
               </SwiperSlide>
             ))}
           </Swiper>
