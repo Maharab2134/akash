@@ -26,6 +26,7 @@ import AdminDashboard from "../src/pages/admin/Dashboard";
 import AdminServices from "../src/pages/admin/Services";
 import AdminProjects from "../src/pages/admin/Projects";
 import AdminAnalytics from "../src/pages/admin/Analytics";
+import AllVisitors from "../src/pages/admin/AllVisitors.jsx";
 import VisitorDetailsPage from "../src/pages/admin/VisitorDetailsPage.jsx";
 import AdminBlog from "../src/pages/admin/Blog";
 import AdminTeam from "../src/pages/admin/Team";
@@ -72,6 +73,7 @@ function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="services" element={<AdminServices />} />
               <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="/admin/visitors" element={<AllVisitors />} />
               <Route path="projects" element={<AdminProjects />} />
               <Route path="blog" element={<AdminBlog />} />
               <Route path="team" element={<AdminTeam />} />

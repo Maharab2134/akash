@@ -517,7 +517,10 @@ export default function AdminAnalytics() {
               <VisitorTable visitors={recentVisitors} />
             </div>
             <div className="pt-6 mt-6 border-t border-gray-100">
-              <button className="w-full py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors">
+              <button
+                onClick={() => (window.location.href = "/admin/visitors")}
+                className="w-full py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+              >
                 View all visitors →
               </button>
             </div>

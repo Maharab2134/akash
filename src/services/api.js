@@ -156,13 +156,17 @@ export const settingsAPI = {
   getAll: () => api.get("/settings"),
   update: (key, value) => api.put(`/settings/${key}`, { value }),
 };
-export const analyticsAPI = { 
-  getDashboard: () => api.get("/analytics"), 
-  getVisitors: (params) => api.get("/analytics/visitors", { params }), 
-  getCountries: (params) => api.get("/analytics/countries", { params }), 
-  getTopPages: (params) => api.get("/analytics/top-pages", { params }), 
-  getVisitorDetails: (sessionId) => api.get(`/analytics/visitor/${sessionId}`), 
-  trackVisitor: (data) => api.post("/analytics/track", data), 
+export const analyticsAPI = {
+  getDashboard: () => api.get("/analytics"),
+  getVisitors: (params) => api.get("/analytics/visitors", { params }),
+  getCountries: (params) => api.get("/analytics/countries", { params }),
+  getTopPages: (params) => api.get("/analytics/top-pages", { params }),
+  getVisitorDetails: (sessionId) => api.get(`/analytics/visitor/${sessionId}`),
+  trackVisitor: (data) => api.post("/analytics/track", data),
+  getAllVisitors: ({ days }) =>
+    api.get("/analytics/visitors/all", {
+      params: { days },
+    }),
 };
 
 export default api;
