@@ -14,6 +14,7 @@ import {
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [navVisible, setNavVisible] = useState(true);
   const location = useLocation();
@@ -145,7 +146,7 @@ export default function Navbar() {
                   >
                     {item.name}
                     {item.hasDropdown && (
-                      <ChevronDownIcon className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
+                      <ChevronDownIcon className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180 md:hidden" />
                     )}
                   </NavLink>
 
@@ -253,45 +254,68 @@ export default function Navbar() {
           {/* Mobile Menu Content */}
           <div className="h-[calc(100vh-120px)] overflow-y-auto">
             <div className="p-4 space-y-1">
-              {navigation.map((item) => (
-                <NavLink
-                  key={item.name}
-                  to={item.to}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center justify-between px-4 py-3.5 rounded-lg font-medium transition-all duration-200 ${
-                      isActive
-                        ? "bg-blue-50 text-blue-600"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`
-                  }
-                >
-                  <span>{item.name}</span>
-                  {item.hasDropdown && <ChevronDownIcon className="w-4 h-4" />}
-                </NavLink>
-              ))}
-
-              {/* Mobile Services Section */}
-              {services.length > 0 && (
-                <div className="px-4 py-3 mt-4">
-                  <h3 className="mb-3 text-sm font-semibold text-gray-500 uppercase">
-                    Our Services
-                  </h3>
-                  <div className="space-y-2">
-                    {services.map((service) => (
-                      <Link
-                        key={service.id}
-                        to={`/services/${service.slug}`}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center px-3 py-2.5 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600"
+              {navigation.map((item) => {
+                // ================= SERVICES (WITH DROPDOWN) =================
+                if (item.hasDropdown) {
+                  return (
+                    <div key={item.name}>
+                      <button
+                        onClick={() =>
+                          setMobileServicesOpen(!mobileServicesOpen)
+                        }
+                        className="flex items-center justify-between w-full px-4 py-3.5
+          rounded-lg font-medium text-gray-700 hover:bg-gray-100"
                       >
-                        <div className="w-2 h-2 mr-3 bg-blue-500 rounded-full"></div>
-                        {service.title}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+                        <span>{item.name}</span>
+                        <ChevronDownIcon
+                          className={`w-4 h-4 transition-transform ${
+                            mobileServicesOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {/* Services list — SERVICES এর ঠিক নিচে */}
+                      {mobileServicesOpen && services.length > 0 && (
+                        <div className="pl-6 mt-2 space-y-2">
+                          {services.map((service) => (
+                            <Link
+                              key={service.id}
+                              to={`/services/${service.slug}`}
+                              onClick={() => {
+                                setIsMenuOpen(false);
+                                setMobileServicesOpen(false);
+                              }}
+                              className="flex items-center px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600"
+                            >
+                              <span className="w-2 h-2 mr-3 bg-blue-500 rounded-full"></span>
+                              {service.title}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                // ================= NORMAL MENU ITEMS =================
+                return (
+                  <NavLink
+                    key={item.name}
+                    to={item.to}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center px-4 py-3.5 rounded-lg font-medium transition-all
+        ${
+          isActive
+            ? "bg-blue-50 text-blue-600"
+            : "text-gray-700 hover:bg-gray-100"
+        }`
+                    }
+                  >
+                    {item.name}
+                  </NavLink>
+                );
+              })}
             </div>
 
             {/* Mobile Menu Footer */}

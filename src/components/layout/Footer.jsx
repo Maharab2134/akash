@@ -91,10 +91,8 @@ export default function Footer() {
               </span>
             </div>
             <p className="mb-6 text-gray-400">
-              AminWebTech is a software company based in Dhaka that provides
-              comprehensive digital solutions. Their primary focus is on
-              delivering solutions for Web, App, Software, Digital Marketing,
-              and Graphics Design.
+              We build modern web, mobile, and digital solutions that help
+              brands grow and succeed online.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
