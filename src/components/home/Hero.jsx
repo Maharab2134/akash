@@ -1,8 +1,23 @@
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaArrowRight, FaPlay, FaTimes } from "react-icons/fa";
 
+/* =====================
+   Lazy Loaded Icons
+===================== */
+const FaArrowRight = lazy(() =>
+  import("react-icons/fa").then((m) => ({ default: m.FaArrowRight }))
+);
+const FaPlay = lazy(() =>
+  import("react-icons/fa").then((m) => ({ default: m.FaPlay }))
+);
+const FaTimes = lazy(() =>
+  import("react-icons/fa").then((m) => ({ default: m.FaTimes }))
+);
+
+/* =====================
+   Hero Slides Data
+===================== */
 const heroSlides = [
   {
     badge: "Digital Solutions",
@@ -33,25 +48,39 @@ const heroSlides = [
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openVideo, setOpenVideo] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
+  /* =====================
+     Mark First Paint Done
+  ===================== */
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  /* =====================
+     Auto Slide (after mount)
+  ===================== */
+  useEffect(() => {
+    if (!mounted) return;
+
     const interval = setInterval(() => {
       setCurrentSlide((p) => (p + 1) % heroSlides.length);
     }, 6000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [mounted]);
 
   return (
     <section className="relative overflow-hidden">
-      {/* HERO */}
-      <div className="relative h-[620px] md:h-[720px]">
+      {/* ================= HERO ================= */}
+      <div className="relative min-h-[100vh]">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
-            initial={{ opacity: 0, y: 20 }}
+            initial={mounted ? { opacity: 0, y: 20 } : false}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className={`absolute inset-0 bg-gradient-to-br ${heroSlides[currentSlide].background}`}
           >
             <div className="absolute inset-0 bg-black/40" />
@@ -74,21 +103,25 @@ export default function Hero() {
                     {heroSlides[currentSlide].subtitle}
                   </p>
 
-                  {/* CTA */}
+                  {/* CTA Buttons */}
                   <div className="flex flex-wrap gap-4">
                     <Link
                       to="/contact"
                       className="inline-flex items-center px-8 py-4 font-semibold text-blue-700 bg-white rounded-lg hover:bg-blue-50"
                     >
                       {heroSlides[currentSlide].cta}
-                      <FaArrowRight className="ml-3" />
+                      <Suspense fallback={null}>
+                        <FaArrowRight className="ml-3" />
+                      </Suspense>
                     </Link>
 
                     <button
                       onClick={() => setOpenVideo(true)}
                       className="inline-flex items-center px-8 py-4 font-semibold text-white border rounded-lg border-white/40 hover:bg-white/10"
                     >
-                      <FaPlay className="mr-3" />
+                      <Suspense fallback={null}>
+                        <FaPlay className="mr-3" />
+                      </Suspense>
                       Watch Demo
                     </button>
                   </div>
@@ -98,7 +131,7 @@ export default function Hero() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Indicators */}
+        {/* ================= Indicators ================= */}
         <div className="absolute flex gap-3 -translate-x-1/2 bottom-8 left-1/2">
           {heroSlides.map((_, i) => (
             <button
@@ -114,7 +147,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* VIDEO MODAL */}
+      {/* ================= VIDEO MODAL ================= */}
       <AnimatePresence>
         {openVideo && (
           <motion.div
@@ -136,13 +169,15 @@ export default function Hero() {
                 onClick={() => setOpenVideo(false)}
                 className="absolute z-10 p-2 text-white top-3 right-3"
               >
-                <FaTimes />
+                <Suspense fallback={null}>
+                  <FaTimes />
+                </Suspense>
               </button>
 
-              {/* Replace video src */}
               <iframe
+                loading="lazy"
                 className="w-full h-[400px]"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
                 title="Demo Video"
                 allow="autoplay; fullscreen"
                 allowFullScreen
