@@ -306,7 +306,11 @@ export default function Home() {
     Array.isArray(services) && services.length > 0
       ? services
       : fallbackServices;
-  const safeProjects = projects?.data || fallbackProjects;
+  const safeProjects = Array.isArray(projects)
+    ? projects
+    : Array.isArray(projects?.data)
+    ? projects.data
+    : fallbackProjects;
   const safeTestimonials = testimonials?.data || fallbackTestimonials;
 
   const displayServices =

@@ -91,6 +91,19 @@ export default function AdminLayout() {
                 </li>
               ))}
             </ul>
+
+            <div className="pt-4 mt-auto border-t">
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setSidebarOpen(false);
+                }}
+                className="flex items-center w-full px-4 py-3 mt-4 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50"
+              >
+                <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-3" />
+                Logout
+              </button>
+            </div>
           </nav>
         </div>
       </div>
