@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import MediaSlider from "../components/home/MediaSlider.jsx";
+import { mediaAPI } from "../services/api";
 import { servicesAPI, projectsAPI, testimonialsAPI } from "../services/api";
 import Hero from "../components/home/Hero.jsx";
 import ServiceCard from "../components/services/ServiceCard";
@@ -198,6 +200,17 @@ export default function Home() {
       .filter(Boolean);
   };
 
+  const {
+    data: mediaResponse,
+    isLoading: mediaLoading,
+    isError: mediaError,
+  } = useQuery({
+    queryKey: ["media-images"],
+    queryFn: () => mediaAPI.getAll({ type: "image", limit: 12 }),
+  });
+
+  const mediaImages = mediaResponse?.data ?? mediaResponse ?? [];
+
   const normalizeTechnologies = (technologies) => {
     const arr = normalizeToArray(technologies);
     return arr
@@ -300,7 +313,8 @@ export default function Home() {
     return () => timers.forEach((timer) => clearTimeout(timer));
   }, []);
 
-  const isLoading = servicesLoading || projectsLoading || testimonialsLoading;
+  const isLoading =
+    servicesLoading || projectsLoading || testimonialsLoading || mediaLoading;
 
   const safeServices =
     Array.isArray(services) && services.length > 0
@@ -331,7 +345,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen overflow-hidden">
+    <div className="min-h-screen">
       <Hero />
 
       {/* Stats Section - Modern Design */}
@@ -451,6 +465,7 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+          <MediaSlider images={mediaImages} />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
